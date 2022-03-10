@@ -42,6 +42,10 @@ namespace RandomPassGen {
 	private: System::Windows::Forms::TextBox^ seedText;
 	private: System::Windows::Forms::Button^ generateBtn;
 	private: System::Windows::Forms::TextBox^ generatedText;
+	private: System::Windows::Forms::Label^ label1;
+	private: System::Windows::Forms::TextBox^ lengthText;
+	private: System::Windows::Forms::Label^ label2;
+
 
 	protected:
 
@@ -66,6 +70,9 @@ namespace RandomPassGen {
 			this->seedText = (gcnew System::Windows::Forms::TextBox());
 			this->generateBtn = (gcnew System::Windows::Forms::Button());
 			this->generatedText = (gcnew System::Windows::Forms::TextBox());
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->lengthText = (gcnew System::Windows::Forms::TextBox());
+			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->SuspendLayout();
 			// 
 			// randomSeedBtn
@@ -78,7 +85,7 @@ namespace RandomPassGen {
 			this->randomSeedBtn->TabStop = true;
 			this->randomSeedBtn->Text = L"Use random seed";
 			this->randomSeedBtn->UseVisualStyleBackColor = true;
-			this->randomSeedBtn->CheckedChanged += gcnew System::EventHandler(this, &MyForm::radioButton1_CheckedChanged);
+			this->randomSeedBtn->CheckedChanged += gcnew System::EventHandler(this, &MyForm::randomSeedBtn_CheckedChanged);
 			// 
 			// customSeedBtn
 			// 
@@ -103,7 +110,7 @@ namespace RandomPassGen {
 			// 
 			// generateBtn
 			// 
-			this->generateBtn->Location = System::Drawing::Point(56, 226);
+			this->generateBtn->Location = System::Drawing::Point(56, 276);
 			this->generateBtn->Name = L"generateBtn";
 			this->generateBtn->Size = System::Drawing::Size(205, 74);
 			this->generateBtn->TabIndex = 3;
@@ -113,43 +120,80 @@ namespace RandomPassGen {
 			// 
 			// generatedText
 			// 
-			this->generatedText->Location = System::Drawing::Point(56, 333);
+			this->generatedText->Location = System::Drawing::Point(56, 385);
 			this->generatedText->Name = L"generatedText";
 			this->generatedText->Size = System::Drawing::Size(746, 26);
 			this->generatedText->TabIndex = 4;
+			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->Location = System::Drawing::Point(52, 225);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(63, 20);
+			this->label1->TabIndex = 6;
+			this->label1->Text = L"Length:";
+			// 
+			// lengthText
+			// 
+			this->lengthText->Location = System::Drawing::Point(121, 222);
+			this->lengthText->MaxLength = 2;
+			this->lengthText->Name = L"lengthText";
+			this->lengthText->Size = System::Drawing::Size(100, 26);
+			this->lengthText->TabIndex = 7;
+			this->lengthText->Text = L"8";
+			// 
+			// label2
+			// 
+			this->label2->AutoSize = true;
+			this->label2->Location = System::Drawing::Point(227, 225);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(70, 20);
+			this->label2->TabIndex = 8;
+			this->label2->Text = L"(max 99)";
 			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->ClientSize = System::Drawing::Size(854, 651);
+			this->Controls->Add(this->label2);
+			this->Controls->Add(this->lengthText);
+			this->Controls->Add(this->label1);
 			this->Controls->Add(this->generatedText);
 			this->Controls->Add(this->generateBtn);
 			this->Controls->Add(this->seedText);
 			this->Controls->Add(this->customSeedBtn);
 			this->Controls->Add(this->randomSeedBtn);
 			this->Name = L"MyForm";
-			this->Text = L"MyForm";
+			this->Text = L"Random Password Generator";
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
 		}
 #pragma endregion
-	private: System::Void radioButton1_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+	private: System::Void randomSeedBtn_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
+		this->seedText->Enabled = false;
 	}
 	private: System::Void customSeedBtn_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
 		this->seedText->Enabled = true;
 	}
 	private: System::Void generateBtn_Click(System::Object^ sender, System::EventArgs^ e) {
 		System::String^ generatedPass;
+		int iterations = System::Convert::ToInt16(this->lengthText->Text);
 
 		if (this->randomSeedBtn->Checked){
 			srand(time(NULL));
 		} else if (this->customSeedBtn->Checked) {
 			srand(System::Convert::ToInt32(this->seedText->Text));
 		}
-		generatedPass = System::Convert::ToString(rand());
+		
+		for (int i = 0; i < iterations; i++) {
+			generatedPass += System::Convert::ToChar((rand() % 90) + 33);
+		}
 		this->generatedText->Text = generatedPass;
 	}
+private: System::Void textBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+}
 };
 }
