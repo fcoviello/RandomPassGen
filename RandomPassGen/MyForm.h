@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include <stdlib.h>
 #include <time.h>
 #include <string>
@@ -45,6 +46,8 @@ namespace RandomPassGen {
 	private: System::Windows::Forms::Label^ label1;
 	private: System::Windows::Forms::TextBox^ lengthText;
 	private: System::Windows::Forms::Label^ label2;
+	private: System::Windows::Forms::Button^ exitBtn;
+
 
 
 	protected:
@@ -73,6 +76,7 @@ namespace RandomPassGen {
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->lengthText = (gcnew System::Windows::Forms::TextBox());
 			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->exitBtn = (gcnew System::Windows::Forms::Button());
 			this->SuspendLayout();
 			// 
 			// randomSeedBtn
@@ -105,14 +109,14 @@ namespace RandomPassGen {
 			this->seedText->ImeMode = System::Windows::Forms::ImeMode::Off;
 			this->seedText->Location = System::Drawing::Point(56, 158);
 			this->seedText->Name = L"seedText";
-			this->seedText->Size = System::Drawing::Size(746, 26);
+			this->seedText->Size = System::Drawing::Size(274, 26);
 			this->seedText->TabIndex = 2;
 			// 
 			// generateBtn
 			// 
 			this->generateBtn->Location = System::Drawing::Point(56, 276);
 			this->generateBtn->Name = L"generateBtn";
-			this->generateBtn->Size = System::Drawing::Size(205, 74);
+			this->generateBtn->Size = System::Drawing::Size(274, 74);
 			this->generateBtn->TabIndex = 3;
 			this->generateBtn->Text = L"Generate Passwod";
 			this->generateBtn->UseVisualStyleBackColor = true;
@@ -121,9 +125,11 @@ namespace RandomPassGen {
 			// generatedText
 			// 
 			this->generatedText->Location = System::Drawing::Point(56, 385);
+			this->generatedText->Multiline = true;
 			this->generatedText->Name = L"generatedText";
-			this->generatedText->Size = System::Drawing::Size(746, 26);
+			this->generatedText->Size = System::Drawing::Size(274, 101);
 			this->generatedText->TabIndex = 4;
+			this->generatedText->TextChanged += gcnew System::EventHandler(this, &MyForm::generatedText_TextChanged);
 			// 
 			// label1
 			// 
@@ -152,11 +158,22 @@ namespace RandomPassGen {
 			this->label2->TabIndex = 8;
 			this->label2->Text = L"(max 99)";
 			// 
+			// exitBtn
+			// 
+			this->exitBtn->Location = System::Drawing::Point(56, 521);
+			this->exitBtn->Name = L"exitBtn";
+			this->exitBtn->Size = System::Drawing::Size(274, 74);
+			this->exitBtn->TabIndex = 9;
+			this->exitBtn->Text = L"Exit";
+			this->exitBtn->UseVisualStyleBackColor = true;
+			this->exitBtn->Click += gcnew System::EventHandler(this, &MyForm::button1_Click);
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(854, 651);
+			this->ClientSize = System::Drawing::Size(392, 648);
+			this->Controls->Add(this->exitBtn);
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->lengthText);
 			this->Controls->Add(this->label1);
@@ -165,8 +182,11 @@ namespace RandomPassGen {
 			this->Controls->Add(this->seedText);
 			this->Controls->Add(this->customSeedBtn);
 			this->Controls->Add(this->randomSeedBtn);
+			this->MaximumSize = System::Drawing::Size(414, 704);
+			this->MinimumSize = System::Drawing::Size(0, 704);
 			this->Name = L"MyForm";
 			this->Text = L"Random Password Generator";
+			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -180,20 +200,49 @@ namespace RandomPassGen {
 	}
 	private: System::Void generateBtn_Click(System::Object^ sender, System::EventArgs^ e) {
 		System::String^ generatedPass;
-		int iterations = System::Convert::ToInt16(this->lengthText->Text);
+		System::Char generatedChar;
+		System::Char forbiddenChars[] = {'`','^','*','(',')','{','}','[',']',':',';','\'','\"',',','.','\\','/'};
+		int iterations;
+		int iCustomSeed = 0;
+		bool forbiddedCharFound = false;
 
 		if (this->randomSeedBtn->Checked){
 			srand(time(NULL));
 		} else if (this->customSeedBtn->Checked) {
-			srand(System::Convert::ToInt32(this->seedText->Text));
+			for (int i = 0; i < this->seedText->Text->Length; i++) {
+				iCustomSeed += (int)System::Convert::ToInt32(this->seedText->Text[i]);
+			}
+			srand(iCustomSeed);
 		}
 		
+		iterations = System::Convert::ToInt16(this->lengthText->Text);
 		for (int i = 0; i < iterations; i++) {
-			generatedPass += System::Convert::ToChar((rand() % 90) + 33);
+			do {
+				forbiddedCharFound = false;
+				// Generate random character
+				generatedChar = System::Convert::ToChar((rand() % 90) + 33);
+				// Check if it's a forbidden char
+				for (int x = 0; x < (sizeof(forbiddenChars)/sizeof(System::Char)); x++) {
+					if (generatedChar == forbiddenChars[x]) {
+						forbiddedCharFound = true;
+						break;
+					}
+				}
+			} while (forbiddedCharFound == true);
+
+			// Add char to generated string
+			generatedPass += generatedChar;
 		}
 		this->generatedText->Text = generatedPass;
 	}
-private: System::Void textBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+	private: System::Void textBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+	}
+private: System::Void generatedText_TextChanged(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
+	exit(0);
+}
+private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
 }
 };
 }
