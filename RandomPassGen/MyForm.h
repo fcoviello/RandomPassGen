@@ -47,6 +47,7 @@ namespace RandomPassGen {
 	private: System::Windows::Forms::TextBox^ lengthText;
 	private: System::Windows::Forms::Label^ label2;
 	private: System::Windows::Forms::Button^ exitBtn;
+	private: System::Windows::Forms::Button^ copyBtn;
 
 
 
@@ -77,6 +78,7 @@ namespace RandomPassGen {
 			this->lengthText = (gcnew System::Windows::Forms::TextBox());
 			this->label2 = (gcnew System::Windows::Forms::Label());
 			this->exitBtn = (gcnew System::Windows::Forms::Button());
+			this->copyBtn = (gcnew System::Windows::Forms::Button());
 			this->SuspendLayout();
 			// 
 			// randomSeedBtn
@@ -124,6 +126,8 @@ namespace RandomPassGen {
 			// 
 			// generatedText
 			// 
+			this->generatedText->Font = (gcnew System::Drawing::Font(L"Cascadia Mono", 8, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
 			this->generatedText->Location = System::Drawing::Point(56, 385);
 			this->generatedText->Multiline = true;
 			this->generatedText->Name = L"generatedText";
@@ -168,11 +172,23 @@ namespace RandomPassGen {
 			this->exitBtn->UseVisualStyleBackColor = true;
 			this->exitBtn->Click += gcnew System::EventHandler(this, &MyForm::button1_Click);
 			// 
+			// copyBtn
+			// 
+			this->copyBtn->Location = System::Drawing::Point(341, 385);
+			this->copyBtn->Name = L"copyBtn";
+			this->copyBtn->Size = System::Drawing::Size(75, 101);
+			this->copyBtn->TabIndex = 10;
+			this->copyBtn->Text = L"Copy";
+			this->copyBtn->UseVisualStyleBackColor = true;
+			this->copyBtn->Click += gcnew System::EventHandler(this, &MyForm::copyBtn_Click);
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(392, 648);
+			this->BackColor = System::Drawing::SystemColors::Window;
+			this->ClientSize = System::Drawing::Size(428, 644);
+			this->Controls->Add(this->copyBtn);
 			this->Controls->Add(this->exitBtn);
 			this->Controls->Add(this->label2);
 			this->Controls->Add(this->lengthText);
@@ -182,67 +198,24 @@ namespace RandomPassGen {
 			this->Controls->Add(this->seedText);
 			this->Controls->Add(this->customSeedBtn);
 			this->Controls->Add(this->randomSeedBtn);
-			this->MaximumSize = System::Drawing::Size(414, 704);
-			this->MinimumSize = System::Drawing::Size(0, 704);
+			this->ForeColor = System::Drawing::SystemColors::WindowText;
+			this->MaximumSize = System::Drawing::Size(450, 700);
+			this->MinimumSize = System::Drawing::Size(450, 700);
 			this->Name = L"MyForm";
-			this->Text = L"Random Password Generator";
+			this->Text = L"Random Pass Gen";
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
 		}
 #pragma endregion
-	private: System::Void randomSeedBtn_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
-		this->seedText->Enabled = false;
-	}
-	private: System::Void customSeedBtn_CheckedChanged(System::Object^ sender, System::EventArgs^ e) {
-		this->seedText->Enabled = true;
-	}
-	private: System::Void generateBtn_Click(System::Object^ sender, System::EventArgs^ e) {
-		System::String^ generatedPass;
-		System::Char generatedChar;
-		System::Char forbiddenChars[] = {'`','^','*','(',')','{','}','[',']',':',';','\'','\"',',','.','\\','/'};
-		int iterations;
-		int iCustomSeed = 0;
-		bool forbiddedCharFound = false;
-
-		if (this->randomSeedBtn->Checked){
-			srand(time(NULL));
-		} else if (this->customSeedBtn->Checked) {
-			for (int i = 0; i < this->seedText->Text->Length; i++) {
-				iCustomSeed += (int)System::Convert::ToInt32(this->seedText->Text[i]);
-			}
-			srand(iCustomSeed);
-		}
-		
-		iterations = System::Convert::ToInt16(this->lengthText->Text);
-		for (int i = 0; i < iterations; i++) {
-			do {
-				forbiddedCharFound = false;
-				// Generate random character
-				generatedChar = System::Convert::ToChar((rand() % 90) + 33);
-				// Check if it's a forbidden char
-				for (int x = 0; x < (sizeof(forbiddenChars)/sizeof(System::Char)); x++) {
-					if (generatedChar == forbiddenChars[x]) {
-						forbiddedCharFound = true;
-						break;
-					}
-				}
-			} while (forbiddedCharFound == true);
-
-			// Add char to generated string
-			generatedPass += generatedChar;
-		}
-		this->generatedText->Text = generatedPass;
-	}
-	private: System::Void textBox1_TextChanged(System::Object^ sender, System::EventArgs^ e) {
-	}
-private: System::Void generatedText_TextChanged(System::Object^ sender, System::EventArgs^ e) {
-}
-private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e) {
-	exit(0);
-}
-private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e) {
-}
+	private: System::Void randomSeedBtn_CheckedChanged(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void customSeedBtn_CheckedChanged(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void generateBtn_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void textBox1_TextChanged(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void generatedText_TextChanged(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void MyForm_Load(System::Object^ sender, System::EventArgs^ e);
+	private: System::Void copyBtn_Click(System::Object^ sender, System::EventArgs^ e);
 };
 }
