@@ -147,7 +147,7 @@ namespace RandomPassGen {
 			// lengthText
 			// 
 			this->lengthText->Location = System::Drawing::Point(121, 222);
-			this->lengthText->MaxLength = 2;
+			this->lengthText->MaxLength = 3;
 			this->lengthText->Name = L"lengthText";
 			this->lengthText->Size = System::Drawing::Size(100, 26);
 			this->lengthText->TabIndex = 7;
@@ -158,9 +158,9 @@ namespace RandomPassGen {
 			this->label2->AutoSize = true;
 			this->label2->Location = System::Drawing::Point(227, 225);
 			this->label2->Name = L"label2";
-			this->label2->Size = System::Drawing::Size(70, 20);
+			this->label2->Size = System::Drawing::Size(79, 20);
 			this->label2->TabIndex = 8;
-			this->label2->Text = L"(max 99)";
+			this->label2->Text = L"(max 999)";
 			// 
 			// exitBtn
 			// 
